@@ -1,17 +1,17 @@
 import streamlit as st
 import pandas as pd
 
-# Set page configuration
+# Set page configuration to full screen
 st.set_page_config(
     page_title="Robust CSV Viewer",
-    layout="wide"
+    layout="wide"  # Allows content to stretch across the screen
 )
 
 # Title and Description
-st.title("Robust CSV Viewer 📂")
+st.title("Full-Page Robust CSV Viewer 📂")
 st.markdown("""
-This app loads and displays your CSV file, skipping problematic rows automatically. 
-It is designed to handle large files and inconsistent data formats.
+This app loads and displays your CSV file, maximizing the viewport for easier data navigation.
+Problematic rows are automatically skipped.
 """)
 
 # Google Drive File URL
@@ -34,9 +34,14 @@ try:
     df = pd.concat(data_chunks, ignore_index=True)
     st.success(f"Loaded {len(df)} rows and {len(df.columns)} columns after skipping errors.")
 
-    # Display Data
-    st.subheader("Data Preview")
-    st.dataframe(df.head(100))  # Show the first 100 rows
+    # Data Preview with full-page viewport
+    st.subheader("Full-Page Data Preview")
+    st.markdown(
+        """
+        Use the table below to interact with the data. Scroll horizontally and vertically to explore all rows and columns.
+        """
+    )
+    st.dataframe(df, use_container_width=True, height=800)  # Fill page width, large height
 
     # Data Overview
     st.subheader("Data Overview")
@@ -51,7 +56,7 @@ try:
         default=df.columns[:min(len(df.columns), 5)]  # Default to the first 5 columns
     )
     if selected_columns:
-        st.dataframe(df[selected_columns].head(100))
+        st.dataframe(df[selected_columns], use_container_width=True, height=600)
 
     # Allow Download of Valid Data
     st.subheader("Download Cleaned Data")
